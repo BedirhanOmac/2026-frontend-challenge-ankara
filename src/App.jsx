@@ -21,17 +21,23 @@ function LoadingScreen() {
   );
 }
 
-function ErrorScreen({ error }) {
+function ErrorScreen({ error, onRetry }) {
   return (
     <div className="loading-screen">
-      <div className="loading-title error-title">ACCESS DENIED</div>
-      <div className="loading-msg">{error?.message || 'Failed to fetch investigation data.'}</div>
+      <div className="loading-title error-title">Failed to load data</div>
+      <div className="loading-msg">
+        Failed to load investigation data. Please try again.
+      </div>
+      {error?.message && (
+        <div className="error-detail">{error.message}</div>
+      )}
+      <button className="retry-btn" onClick={onRetry}>↺ Retry</button>
     </div>
   );
 }
 
 export default function App() {
-  const { data, loading, error } = useInvestigationData();
+  const { data, loading, error, retry } = useInvestigationData();
   const [searchQuery, setSearchQuery] = useState('');
   const [openPersons, setOpenPersons] = useState([]);
 
@@ -56,7 +62,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('timeline');
 
   if (loading) return <LoadingScreen />;
-  if (error) return <ErrorScreen error={error} />;
+  if (error) return <ErrorScreen error={error} onRetry={retry} />;
 
   const totalEvents =
     data.checkins.length +
@@ -89,19 +95,19 @@ export default function App() {
       <div className="tab-bar">
         <button
           className={`tab-btn ${activeTab === 'timeline' ? 'active' : ''}`}
-          onClick={() => setActiveTab('timeline')}
+          onClick={() => { setActiveTab('timeline'); setSearchQuery(''); }}
         >
           TIMELINE
         </button>
         <button
           className={`tab-btn ${activeTab === 'persons' ? 'active' : ''}`}
-          onClick={() => setActiveTab('persons')}
+          onClick={() => { setActiveTab('persons'); setSearchQuery(''); }}
         >
           PERSONS
         </button>
         <button
           className={`tab-btn ${activeTab === 'suspects' ? 'active' : ''}`}
-          onClick={() => setActiveTab('suspects')}
+          onClick={() => { setActiveTab('suspects'); setSearchQuery(''); }}
         >
           SUSPECTS
         </button>

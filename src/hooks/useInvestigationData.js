@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchAllData } from '../api/jotform';
 
 export function useInvestigationData() {
@@ -11,30 +11,30 @@ export function useInvestigationData() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
+    setError(null);
 
     async function load() {
       try {
         const result = await fetchAllData();
-        if (!cancelled) {
-          setData(result);
-        }
+        if (!cancelled) setData(result);
       } catch (err) {
         console.error('[useInvestigationData] fetch failed:', err);
-        if (!cancelled) {
-          setError(err);
-        }
+        if (!cancelled) setError(err);
       } finally {
-        // Always stop loading — cancelled only guards data/error state updates
         setLoading(false);
       }
     }
 
     load();
     return () => { cancelled = true; };
-  }, []);
+  }, [retryCount]);
 
-  return { data, loading, error };
+  const retry = useCallback(() => setRetryCount(c => c + 1), []);
+
+  return { data, loading, error, retry };
 }
