@@ -94,7 +94,7 @@ function RecordCard({ record }) {
         <div className="record-body">
           <span className="dim">{record.senderName} → {record.recipientName}</span>
           <br />"{stripBrackets(record.text)}"
-          {record.urgency && <span className="urgency-inline"> [{record.urgency}]</span>}
+          {record.urgency && <span className="urgency-inline"> {record.urgency}</span>}
         </div>
       )}
       {record.type === 'sighting' && (
@@ -104,12 +104,7 @@ function RecordCard({ record }) {
         </div>
       )}
       {record.type === 'note' && (
-        <div className="record-body">
-          {stripBrackets(record.note)}
-          {record.mentionedPeople && (
-            <div className="dim">Mentions: {record.mentionedPeople}</div>
-          )}
-        </div>
+        <div className="record-body">{stripBrackets(record.note)}</div>
       )}
       {record.type === 'tip' && (
         <div className="record-body">
