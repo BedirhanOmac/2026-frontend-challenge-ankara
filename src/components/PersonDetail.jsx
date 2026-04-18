@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { normalizeName } from '../api/jotform';
+import { getPersonKey } from '../api/jotform';
 
 const TYPE_CONFIG = {
   checkin: { label: 'CHECK-IN', color: '#0a1551' },
@@ -24,41 +24,41 @@ function getPersonRecords(data, normalizedKey) {
   const records = [];
 
   data.checkins.forEach((e) => {
-    if (normalizeName(e.personName) === normalizedKey)
+    if (getPersonKey(e.personName) === normalizedKey)
       records.push({ ...e, _role: 'subject' });
   });
 
   data.messages.forEach((e) => {
-    if (normalizeName(e.senderName) === normalizedKey)
+    if (getPersonKey(e.senderName) === normalizedKey)
       records.push({ ...e, _role: 'sender' });
-    else if (normalizeName(e.recipientName) === normalizedKey)
+    else if (getPersonKey(e.recipientName) === normalizedKey)
       records.push({ ...e, _role: 'recipient' });
   });
 
   data.sightings.forEach((e) => {
-    if (normalizeName(e.personName) === normalizedKey) {
+    if (getPersonKey(e.personName) === normalizedKey) {
       records.push({ ...e, _role: 'subject' });
     } else if (
       e.seenWith &&
-      e.seenWith.split(/[,;]/).map((n) => normalizeName(n.trim())).includes(normalizedKey)
+      e.seenWith.split(/[,;]/).map((n) => getPersonKey(n.trim())).includes(normalizedKey)
     ) {
       records.push({ ...e, _role: 'companion' });
     }
   });
 
   data.notes.forEach((e) => {
-    if (normalizeName(e.authorName) === normalizedKey) {
+    if (getPersonKey(e.authorName) === normalizedKey) {
       records.push({ ...e, _role: 'author' });
     } else if (
       e.mentionedPeople &&
-      e.mentionedPeople.split(/[,;]/).map((n) => normalizeName(n.trim())).includes(normalizedKey)
+      e.mentionedPeople.split(/[,;]/).map((n) => getPersonKey(n.trim())).includes(normalizedKey)
     ) {
       records.push({ ...e, _role: 'mentioned' });
     }
   });
 
   data.tips.forEach((e) => {
-    if (normalizeName(e.suspectName) === normalizedKey)
+    if (getPersonKey(e.suspectName) === normalizedKey)
       records.push({ ...e, _role: 'suspect' });
   });
 
@@ -126,7 +126,7 @@ export function PersonDetail({ data, personKey, onClose }) {
   // Find display name from first record
   const displayName = useMemo(() => {
     for (const r of records) {
-      if (normalizeName(r.personName || r.senderName || r.authorName || r.suspectName || '') === personKey) {
+      if (getPersonKey(r.personName || r.senderName || r.authorName || r.suspectName || '') === personKey) {
         return r.personName || r.senderName || r.authorName || r.suspectName || personKey;
       }
     }

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { normalizeName } from '../api/jotform';
+import { getPersonKey } from '../api/jotform';
 
 const CONFIDENCE_WEIGHT = {
   high: 3,
@@ -12,9 +12,11 @@ function rankSuspects(tips) {
 
   tips.forEach((tip) => {
     if (!tip.suspectName || !tip.suspectName.trim()) return;
-    const key = normalizeName(tip.suspectName);
+    const key = getPersonKey(tip.suspectName);
     if (!map.has(key)) {
       map.set(key, { displayName: tip.suspectName.trim(), tipCount: 0, score: 0, tips: [] });
+    } else if (tip.suspectName.trim().length > map.get(key).displayName.length) {
+      map.get(key).displayName = tip.suspectName.trim();
     }
     const entry = map.get(key);
     const weight = CONFIDENCE_WEIGHT[tip.confidence?.toLowerCase()] || 1;

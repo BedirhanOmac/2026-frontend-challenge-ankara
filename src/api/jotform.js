@@ -9,6 +9,13 @@ const FORMS = {
   tips: '261065875889981',
 };
 
+// Fuzzy person key: first word of normalized name
+// "Kağan", "Kagan", "Kağan A." → all become "kagan"
+export function getPersonKey(name) {
+  const n = normalizeName(name);
+  return n ? n.split(/\s+/)[0] : '';
+}
+
 // Remove diacritics for name comparison (Kağan == Kagan)
 export function normalizeName(name) {
   if (!name) return '';
@@ -45,8 +52,8 @@ function extractAnswer(field) {
   if (!field) return '';
   if (typeof field === 'string') return field;
   if (typeof field === 'object') {
-    if (field.answer !== undefined) return field.answer;
-    if (field.name !== undefined) return field.name;
+    // 'answer' key may be absent on un-filled optional fields — do NOT fall back to field.name
+    if ('answer' in field) return field.answer ?? '';
     // Some fields return {first, last} for full names
     if (field.first !== undefined) return `${field.first} ${field.last || ''}`.trim();
   }

@@ -300,7 +300,14 @@ body {
   margin-bottom: 6px;
 }
 
-.person-badges { display: flex; flex-wrap: wrap; gap: 5px; }
+.person-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
+
+.person-last-seen {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.person-last-seen strong { color: var(--text); font-weight: 600; }
 
 .mini-badge {
   font-size: 10px;
