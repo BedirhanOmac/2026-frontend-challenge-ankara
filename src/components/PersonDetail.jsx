@@ -94,7 +94,11 @@ function RecordCard({ record }) {
         <div className="record-body">
           <span className="dim">{record.senderName} → {record.recipientName}</span>
           <br />"{stripBrackets(record.text)}"
-          {record.urgency && <span className="urgency-inline"> {record.urgency}</span>}
+          {record.urgency && (
+            <span className="event-badge" style={{ backgroundColor: { high: '#e02020', medium: '#d97706', low: '#9ca3af' }[record.urgency.toLowerCase()] ?? '#9ca3af', marginLeft: 6 }}>
+              {record.urgency.toUpperCase()}
+            </span>
+          )}
         </div>
       )}
       {record.type === 'sighting' && (
