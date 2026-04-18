@@ -109,7 +109,7 @@ function getPersonRecords(data, normalizedKey) {
   });
 }
 
-function RecordCard({ record, onPersonClick }) {
+function RecordCard({ record, onPersonClick, onLocationClick }) {
   const config = TYPE_CONFIG[record.type] || { label: record.type.toUpperCase(), color: '#6b7280' };
 
   return (
@@ -120,7 +120,11 @@ function RecordCard({ record, onPersonClick }) {
         </span>
         <span className="role-tag">as {record._role}</span>
         <span className="event-time">{formatTime(record.timestamp)}</span>
-        {record.location && <span className="event-location">{record.location}</span>}
+        {record.location && (
+          <button className="event-location" onClick={() => onLocationClick(record.location)}>
+            {record.location}
+          </button>
+        )}
       </div>
 
       {record.type === 'checkin' && (
@@ -164,7 +168,7 @@ function RecordCard({ record, onPersonClick }) {
   );
 }
 
-export function PersonDetail({ data, personKey, onClose, onPersonClick }) {
+export function PersonDetail({ data, personKey, onClose, onPersonClick, onLocationClick }) {
   const records = useMemo(
     () => getPersonRecords(data, personKey),
     [data, personKey]
@@ -189,7 +193,7 @@ export function PersonDetail({ data, personKey, onClose, onPersonClick }) {
         <div className="detail-count">{records.length} records linked</div>
         {records.length === 0 && <div className="empty-state">No records found for this person.</div>}
         {records.map((r) => (
-          <RecordCard key={`${r.type}-${r.id}-${r._role}`} record={r} onPersonClick={onPersonClick} />
+          <RecordCard key={`${r.type}-${r.id}-${r._role}`} record={r} onPersonClick={onPersonClick} onLocationClick={onLocationClick} />
         ))}
       </div>
     </div>

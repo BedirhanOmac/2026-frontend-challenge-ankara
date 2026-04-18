@@ -231,6 +231,14 @@ body {
   background: var(--accent-bg);
   padding: 2px 8px;
   border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: background 0.15s, color 0.15s;
+}
+.event-location:hover {
+  background: var(--accent);
+  color: #fff;
 }
 
 .event-people {

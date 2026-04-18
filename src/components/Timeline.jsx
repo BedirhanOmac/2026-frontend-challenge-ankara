@@ -75,7 +75,7 @@ function renderEventPeople(event, onPersonClick) {
   }
 }
 
-function TimelineEvent({ event, onPersonClick }) {
+function TimelineEvent({ event, onPersonClick, onLocationClick }) {
   const config = TYPE_CONFIG[event.type] || { label: event.type.toUpperCase(), color: '#6b7280' };
   const urgencyColor = event.urgency ? URGENCY_COLORS[event.urgency.toLowerCase()] : null;
 
@@ -91,7 +91,11 @@ function TimelineEvent({ event, onPersonClick }) {
           </span>
         )}
         <span className="event-time">{formatTime(event.timestamp)}</span>
-        <span className="event-location">{event.location}</span>
+        {event.location && (
+          <button className="event-location" onClick={() => onLocationClick(event.location)}>
+            {event.location}
+          </button>
+        )}
       </div>
       <div className="event-people">{renderEventPeople(event, onPersonClick)}</div>
       {getEventContent(event) && (
@@ -101,7 +105,7 @@ function TimelineEvent({ event, onPersonClick }) {
   );
 }
 
-export function Timeline({ data, searchQuery, onPersonClick }) {
+export function Timeline({ data, searchQuery, onPersonClick, onLocationClick }) {
   const events = useMemo(() => {
     const all = [
       ...data.checkins,
@@ -136,7 +140,7 @@ export function Timeline({ data, searchQuery, onPersonClick }) {
     <div className="timeline">
       <div className="timeline-count">{events.length} events</div>
       {events.map((event) => (
-        <TimelineEvent key={`${event.type}-${event.id}`} event={event} onPersonClick={onPersonClick} />
+        <TimelineEvent key={`${event.type}-${event.id}`} event={event} onPersonClick={onPersonClick} onLocationClick={onLocationClick} />
       ))}
     </div>
   );

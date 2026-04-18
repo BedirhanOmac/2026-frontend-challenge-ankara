@@ -113,6 +113,7 @@ export default function App() {
             data={data}
             searchQuery={searchQuery}
             onPersonClick={openPerson}
+            onLocationClick={(loc) => setSearchQuery(loc)}
           />
         )}
 
@@ -131,6 +132,7 @@ export default function App() {
                 personKey={key}
                 onClose={() => closePerson(key)}
                 onPersonClick={openPerson}
+                onLocationClick={(loc) => { setSearchQuery(loc); setActiveTab('timeline'); }}
               />
             ))}
           </div>
