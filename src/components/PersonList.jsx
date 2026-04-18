@@ -84,7 +84,7 @@ const TYPE_COLORS = {
   tip: '#e02020',
 };
 
-export function PersonList({ data, selectedKey, onSelect, searchQuery }) {
+export function PersonList({ data, selectedKeys = [], onSelect, searchQuery }) {
   const people = useMemo(() => extractPeople(data), [data]);
 
   const filtered = useMemo(() => {
@@ -99,7 +99,7 @@ export function PersonList({ data, selectedKey, onSelect, searchQuery }) {
       {filtered.map((person) => (
         <div
           key={person.key}
-          className={`person-item ${selectedKey === person.key ? 'selected' : ''}`}
+          className={`person-item ${selectedKeys.includes(person.key) ? 'selected' : ''}`}
           onClick={() => onSelect(person.key)}
         >
           <div className="person-name">{person.displayName}</div>

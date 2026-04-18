@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { normalizeName, getPersonKey } from '../api/jotform';
 
+const BLACKLIST = new Set(['unknown', 'event staff', 'bilinmiyor', 'staff', 'anonymous', 'n/a']);
+
 const TYPE_CONFIG = {
   checkin: { label: 'CHECK-IN', color: '#0a1551' },
   message: { label: 'MESSAGE', color: '#7c3aed' },
@@ -54,6 +56,7 @@ function getEventContent(event) {
 
 function NameLink({ name, onPersonClick }) {
   if (!name) return null;
+  if (BLACKLIST.has(normalizeName(name))) return <span>{name}</span>;
   return (
     <button className="name-link" onClick={(e) => { e.stopPropagation(); onPersonClick(getPersonKey(name)); }}>
       {name}

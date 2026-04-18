@@ -33,7 +33,26 @@ function ErrorScreen({ error }) {
 export default function App() {
   const { data, loading, error } = useInvestigationData();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPerson, setSelectedPerson] = useState(null);
+  const [openPersons, setOpenPersons] = useState([]);
+
+  function openPerson(key) {
+    setOpenPersons(prev => {
+      if (prev.includes(key)) return prev;
+      if (prev.length >= 3) return [...prev.slice(1), key]; // drop oldest, add newest
+      return [...prev, key];
+    });
+    setActiveTab('persons');
+  }
+
+  function closePerson(key) {
+    setOpenPersons(prev => prev.filter(k => k !== key));
+  }
+
+  function togglePerson(key) {
+    setOpenPersons(prev =>
+      prev.includes(key) ? prev.filter(k => k !== key) : (prev.length >= 3 ? [...prev.slice(1), key] : [...prev, key])
+    );
+  }
   const [activeTab, setActiveTab] = useState('timeline');
 
   if (loading) return <LoadingScreen />;
@@ -93,7 +112,7 @@ export default function App() {
           <Timeline
             data={data}
             searchQuery={searchQuery}
-            onPersonClick={(key) => { setSelectedPerson(key); setActiveTab('persons'); }}
+            onPersonClick={openPerson}
           />
         )}
 
@@ -101,18 +120,19 @@ export default function App() {
           <div className="persons-layout">
             <PersonList
               data={data}
-              selectedKey={selectedPerson}
-              onSelect={(key) => setSelectedPerson(key === selectedPerson ? null : key)}
+              selectedKeys={openPersons}
+              onSelect={togglePerson}
               searchQuery={searchQuery}
             />
-            {selectedPerson && (
+            {openPersons.map(key => (
               <PersonDetail
+                key={key}
                 data={data}
-                personKey={selectedPerson}
-                onClose={() => setSelectedPerson(null)}
-                onPersonClick={(key) => setSelectedPerson(key)}
+                personKey={key}
+                onClose={() => closePerson(key)}
+                onPersonClick={openPerson}
               />
-            )}
+            ))}
           </div>
         )}
 
