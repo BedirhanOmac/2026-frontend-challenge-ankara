@@ -77,7 +77,7 @@ function TimelineEvent({ event, onPersonClick }) {
   const urgencyColor = event.urgency ? URGENCY_COLORS[event.urgency.toLowerCase()] : null;
 
   return (
-    <div className="timeline-event">
+    <div className="timeline-event" style={{ borderLeft: `3px solid ${config.color}` }}>
       <div className="event-header">
         <span className="event-badge" style={{ backgroundColor: config.color }}>
           {config.label}

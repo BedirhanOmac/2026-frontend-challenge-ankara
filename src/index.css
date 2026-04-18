@@ -192,6 +192,7 @@ body {
 .timeline-event:hover {
   box-shadow: var(--shadow-md);
   border-color: #d0d0e8;
+  transform: translateY(-1px);
 }
 
 .event-header {
@@ -225,8 +226,11 @@ body {
 
 .event-location {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--accent);
+  background: var(--accent-bg);
+  padding: 2px 8px;
+  border-radius: 20px;
 }
 
 .event-people {

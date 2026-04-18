@@ -110,6 +110,7 @@ export default function App() {
                 data={data}
                 personKey={selectedPerson}
                 onClose={() => setSelectedPerson(null)}
+                onPersonClick={(key) => setSelectedPerson(key)}
               />
             )}
           </div>

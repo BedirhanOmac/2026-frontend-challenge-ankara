@@ -9,6 +9,12 @@ const TYPE_CONFIG = {
   tip: { label: 'TIP', color: '#e02020' },
 };
 
+const CONFIDENCE_COLORS = {
+  high: '#e02020',
+  medium: '#d97706',
+  low: '#9ca3af',
+};
+
 function stripBrackets(str) {
   return (str || '').replace(/\[.*?\]/g, '').trim();
 }
@@ -22,6 +28,32 @@ function formatTime(date) {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+function NameLink({ name, onPersonClick }) {
+  if (!name) return null;
+  return (
+    <button
+      className="name-link"
+      onClick={(e) => { e.stopPropagation(); onPersonClick(getPersonKey(name.trim())); }}
+    >
+      {name.trim()}
+    </button>
+  );
+}
+
+function SeenWithLinks({ seenWith, onPersonClick }) {
+  const names = seenWith.split(/[,;]/).map((n) => n.trim()).filter(Boolean);
+  return (
+    <>
+      {names.map((n, i) => (
+        <React.Fragment key={n}>
+          <NameLink name={n} onPersonClick={onPersonClick} />
+          {i < names.length - 1 ? ', ' : ''}
+        </React.Fragment>
+      ))}
+    </>
+  );
 }
 
 function getPersonRecords(data, normalizedKey) {
@@ -73,11 +105,11 @@ function getPersonRecords(data, normalizedKey) {
   });
 }
 
-function RecordCard({ record }) {
+function RecordCard({ record, onPersonClick }) {
   const config = TYPE_CONFIG[record.type] || { label: record.type.toUpperCase(), color: '#6b7280' };
 
   return (
-    <div className="record-card">
+    <div className="record-card" style={{ borderLeft: `3px solid ${config.color}` }}>
       <div className="record-header">
         <span className="event-badge" style={{ backgroundColor: config.color }}>
           {config.label}
@@ -95,7 +127,7 @@ function RecordCard({ record }) {
           <span className="dim">{record.senderName} → {record.recipientName}</span>
           <br />"{stripBrackets(record.text)}"
           {record.urgency && (
-            <span className="event-badge" style={{ backgroundColor: { high: '#e02020', medium: '#d97706', low: '#9ca3af' }[record.urgency.toLowerCase()] ?? '#9ca3af', marginLeft: 6 }}>
+            <span className="event-badge" style={{ backgroundColor: CONFIDENCE_COLORS[record.urgency.toLowerCase()] ?? '#9ca3af', marginLeft: 6 }}>
               {record.urgency.toUpperCase()}
             </span>
           )}
@@ -103,7 +135,11 @@ function RecordCard({ record }) {
       )}
       {record.type === 'sighting' && (
         <div className="record-body">
-          {record.seenWith && <span className="dim">Seen with: {record.seenWith}<br /></span>}
+          {record.seenWith && (
+            <div className="dim">
+              Seen with: <SeenWithLinks seenWith={record.seenWith} onPersonClick={onPersonClick} />
+            </div>
+          )}
           {stripBrackets(record.note)}
         </div>
       )}
@@ -113,20 +149,23 @@ function RecordCard({ record }) {
       {record.type === 'tip' && (
         <div className="record-body">
           {stripBrackets(record.tip)}
-          {record.confidence && <span className="dim">Confidence: {record.confidence}</span>}
+          {record.confidence && (
+            <span className="event-badge" style={{ backgroundColor: CONFIDENCE_COLORS[record.confidence.toLowerCase()] ?? '#9ca3af', marginLeft: 6 }}>
+              {record.confidence.toUpperCase()}
+            </span>
+          )}
         </div>
       )}
     </div>
   );
 }
 
-export function PersonDetail({ data, personKey, onClose }) {
+export function PersonDetail({ data, personKey, onClose, onPersonClick }) {
   const records = useMemo(
     () => getPersonRecords(data, personKey),
     [data, personKey]
   );
 
-  // Find display name from first record
   const displayName = useMemo(() => {
     for (const r of records) {
       if (getPersonKey(r.personName || r.senderName || r.authorName || r.suspectName || '') === personKey) {
@@ -145,7 +184,7 @@ export function PersonDetail({ data, personKey, onClose }) {
       <div className="detail-count">{records.length} records linked</div>
       {records.length === 0 && <div className="empty-state">No records found for this person.</div>}
       {records.map((r) => (
-        <RecordCard key={`${r.type}-${r.id}-${r._role}`} record={r} />
+        <RecordCard key={`${r.type}-${r.id}-${r._role}`} record={r} onPersonClick={onPersonClick} />
       ))}
     </div>
   );
