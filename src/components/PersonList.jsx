@@ -37,11 +37,11 @@ function extractPeople(data) {
 }
 
 const TYPE_COLORS = {
-  checkin: '#3b82f6',
-  message: '#8b5cf6',
-  sighting: '#f59e0b',
-  note: '#10b981',
-  tip: '#ef4444',
+  checkin: '#0a1551',
+  message: '#7c3aed',
+  sighting: '#ff6100',
+  note: '#059669',
+  tip: '#e02020',
 };
 
 export function PersonList({ data, selectedKey, onSelect, searchQuery }) {

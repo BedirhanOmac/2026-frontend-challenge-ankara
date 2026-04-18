@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react';
 
 const TYPE_CONFIG = {
-  checkin: { label: 'CHECK-IN', color: '#3b82f6' },
-  message: { label: 'MESSAGE', color: '#8b5cf6' },
-  sighting: { label: 'SIGHTING', color: '#f59e0b' },
-  note: { label: 'NOTE', color: '#10b981' },
-  tip: { label: 'TIP', color: '#ef4444' },
+  checkin: { label: 'CHECK-IN', color: '#0a1551' },
+  message: { label: 'MESSAGE', color: '#7c3aed' },
+  sighting: { label: 'SIGHTING', color: '#ff6100' },
+  note: { label: 'NOTE', color: '#059669' },
+  tip: { label: 'TIP', color: '#e02020' },
 };
 
 const URGENCY_COLORS = {
-  high: '#ef4444',
-  medium: '#f59e0b',
-  low: '#10b981',
+  high: '#e02020',
+  medium: '#d97706',
+  low: '#059669',
 };
 
 function formatTime(date) {
