@@ -37,13 +37,17 @@ function getEventPeople(event) {
   }
 }
 
+function stripBrackets(str) {
+  return (str || '').replace(/\[.*?\]/g, '').trim();
+}
+
 function getEventContent(event) {
   switch (event.type) {
-    case 'checkin': return event.note;
-    case 'message': return event.text;
-    case 'sighting': return event.note;
-    case 'note': return event.note + (event.mentionedPeople ? ` [mentions: ${event.mentionedPeople}]` : '');
-    case 'tip': return event.tip + (event.confidence ? ` [confidence: ${event.confidence}]` : '');
+    case 'checkin': return stripBrackets(event.note);
+    case 'message': return stripBrackets(event.text);
+    case 'sighting': return stripBrackets(event.note);
+    case 'note': return stripBrackets(event.note);
+    case 'tip': return stripBrackets(event.tip);
     default: return '';
   }
 }

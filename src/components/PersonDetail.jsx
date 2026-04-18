@@ -9,6 +9,10 @@ const TYPE_CONFIG = {
   tip: { label: 'TIP', color: '#e02020' },
 };
 
+function stripBrackets(str) {
+  return (str || '').replace(/\[.*?\]/g, '').trim();
+}
+
 function formatTime(date) {
   if (!date) return '??:??';
   return date.toLocaleString('tr-TR', {
@@ -84,24 +88,24 @@ function RecordCard({ record }) {
       </div>
 
       {record.type === 'checkin' && (
-        <div className="record-body">{record.note}</div>
+        <div className="record-body">{stripBrackets(record.note)}</div>
       )}
       {record.type === 'message' && (
         <div className="record-body">
           <span className="dim">{record.senderName} → {record.recipientName}</span>
-          <br />"{record.text}"
+          <br />"{stripBrackets(record.text)}"
           {record.urgency && <span className="urgency-inline"> [{record.urgency}]</span>}
         </div>
       )}
       {record.type === 'sighting' && (
         <div className="record-body">
           {record.seenWith && <span className="dim">Seen with: {record.seenWith}<br /></span>}
-          {record.note}
+          {stripBrackets(record.note)}
         </div>
       )}
       {record.type === 'note' && (
         <div className="record-body">
-          {record.note}
+          {stripBrackets(record.note)}
           {record.mentionedPeople && (
             <div className="dim">Mentions: {record.mentionedPeople}</div>
           )}
@@ -109,8 +113,8 @@ function RecordCard({ record }) {
       )}
       {record.type === 'tip' && (
         <div className="record-body">
-          {record.tip}
-          {record.confidence && <span className="dim"> [confidence: {record.confidence}]</span>}
+          {stripBrackets(record.tip)}
+          {record.confidence && <span className="dim">Confidence: {record.confidence}</span>}
         </div>
       )}
     </div>
