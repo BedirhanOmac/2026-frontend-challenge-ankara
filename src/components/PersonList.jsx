@@ -89,8 +89,8 @@ export function PersonList({ data, selectedKey, onSelect, searchQuery }) {
 
   const filtered = useMemo(() => {
     if (!searchQuery) return people;
-    const q = searchQuery.toLowerCase();
-    return people.filter((p) => p.displayName.toLowerCase().includes(q));
+    const q = normalizeName(searchQuery);
+    return people.filter((p) => normalizeName(p.displayName).includes(q));
   }, [people, searchQuery]);
 
   return (

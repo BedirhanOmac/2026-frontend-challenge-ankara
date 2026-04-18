@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { normalizeName } from '../api/jotform';
 
 const TYPE_CONFIG = {
   checkin: { label: 'CHECK-IN', color: '#0a1551' },
@@ -91,11 +92,11 @@ export function Timeline({ data, searchQuery }) {
 
     if (!searchQuery) return sorted;
 
-    const q = searchQuery.toLowerCase();
+    const q = normalizeName(searchQuery);
     return sorted.filter((e) => {
-      const people = getEventPeople(e).toLowerCase();
-      const content = getEventContent(e).toLowerCase();
-      const location = (e.location || '').toLowerCase();
+      const people = normalizeName(getEventPeople(e));
+      const content = normalizeName(getEventContent(e));
+      const location = normalizeName(e.location || '');
       return people.includes(q) || content.includes(q) || location.includes(q);
     });
   }, [data, searchQuery]);
