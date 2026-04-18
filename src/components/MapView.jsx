@@ -1,6 +1,7 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { getPersonKey } from '../api/jotform';
 
 const TYPE_COLORS = {
   checkin: '#059669',
@@ -47,7 +48,18 @@ function formatTime(date) {
   });
 }
 
-function popupHTML(event) {
+function getEventPersonName(event) {
+  switch (event.type) {
+    case 'checkin':  return event.personName;
+    case 'message':  return event.senderName;
+    case 'sighting': return event.personName;
+    case 'note':     return event.authorName;
+    case 'tip':      return event.suspectName;
+    default:         return null;
+  }
+}
+
+function popupHTML(event, popupId) {
   const color = TYPE_COLORS[event.type] || '#6b7280';
   const label = TYPE_LABELS[event.type] || event.type;
 
@@ -61,6 +73,7 @@ function popupHTML(event) {
   }
 
   const body = (event.note || event.text || event.tip || '').replace(/\[.*?\]/g, '').trim();
+  const personName = getEventPersonName(event);
 
   return `
     <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;min-width:180px;max-width:240px;line-height:1.5">
@@ -70,20 +83,25 @@ function popupHTML(event) {
       </div>
       <div style="font-weight:700;color:#0a1551;margin-bottom:2px">${people}</div>
       <div style="color:#ff6100;font-size:11px;font-weight:600;margin-bottom:4px">📍 ${event.location || ''}</div>
-      ${body ? `<div style="color:#545e94;font-style:italic">"${body}"</div>` : ''}
+      ${body ? `<div style="color:#545e94;font-style:italic;margin-bottom:8px">"${body}"</div>` : '<div style="margin-bottom:8px"></div>'}
+      ${personName ? `<button id="${popupId}" style="background:#ff6100;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">View profile →</button>` : ''}
     </div>
   `;
 }
 
-export function MapView({ data }) {
+export function MapView({ data, onPersonClick }) {
   const containerRef = useRef(null);
+  const onPersonClickRef = useRef(onPersonClick);
+  useEffect(() => { onPersonClickRef.current = onPersonClick; }, [onPersonClick]);
 
+  // Tips rendered first (bottom layer), checkins last (top layer)
+  // so Podo's check-in markers surface on top at shared coordinates
   const allEvents = useMemo(() => [
-    ...data.checkins,
+    ...data.tips,
+    ...data.notes,
     ...data.messages,
     ...data.sightings,
-    ...data.notes,
-    ...data.tips,
+    ...data.checkins,
   ].filter((e) => parseCoords(e.coordinates)), [data]);
 
   // Podo's confirmed locations: checkins + sightings where Podo is the subject
@@ -109,8 +127,11 @@ export function MapView({ data }) {
       maxZoom: 19,
     }).addTo(map);
 
-    // Draw Podo's route first so markers sit on top
-    if (podoRoute.length > 1) {
+    // Draw Podo's route only when there are 2+ distinct locations
+    const distinctRoute = podoRoute.filter(
+      (coord, i, arr) => i === 0 || coord[0] !== arr[i - 1][0] || coord[1] !== arr[i - 1][1]
+    );
+    if (distinctRoute.length > 1) {
       L.polyline(podoRoute, {
         color: '#ff6100',
         weight: 3,
@@ -119,21 +140,30 @@ export function MapView({ data }) {
       }).addTo(map);
 
       // Start and end markers for the route
-      L.marker(podoRoute[0], { icon: makeIcon('#059669', 18) })
+      L.marker(distinctRoute[0], { icon: makeIcon('#059669', 18) })
         .addTo(map)
         .bindPopup('<b>Route start</b>');
-      L.marker(podoRoute[podoRoute.length - 1], { icon: makeIcon('#e02020', 18) })
+      L.marker(distinctRoute[distinctRoute.length - 1], { icon: makeIcon('#e02020', 18) })
         .addTo(map)
         .bindPopup('<b>Last known location</b>');
     }
 
     // Add all event markers
-    allEvents.forEach((e) => {
+    allEvents.forEach((e, i) => {
       const coords = parseCoords(e.coordinates);
       const color = TYPE_COLORS[e.type] || '#6b7280';
-      L.marker(coords, { icon: makeIcon(color) })
+      const popupId = `popup-btn-${i}`;
+      const personName = getEventPersonName(e);
+      const marker = L.marker(coords, { icon: makeIcon(color) })
         .addTo(map)
-        .bindPopup(popupHTML(e), { maxWidth: 260 });
+        .bindPopup(popupHTML(e, popupId), { maxWidth: 260 });
+
+      if (personName) {
+        marker.on('popupopen', () => {
+          const btn = document.getElementById(popupId);
+          if (btn) btn.onclick = () => onPersonClickRef.current?.(getPersonKey(personName));
+        });
+      }
     });
 
     // Fit map to all markers if we have data

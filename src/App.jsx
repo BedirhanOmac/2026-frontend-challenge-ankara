@@ -159,7 +159,7 @@ export default function App() {
         )}
 
         {activeTab === 'map' && (
-          <MapView data={data} />
+          <MapView data={data} onPersonClick={openPerson} />
         )}
       </main>
     </div>
