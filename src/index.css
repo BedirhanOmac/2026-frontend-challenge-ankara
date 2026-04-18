@@ -351,6 +351,14 @@ body {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.person-detail-body {
+  overflow-y: auto;
+  flex: 1;
 }
 
 .detail-header {

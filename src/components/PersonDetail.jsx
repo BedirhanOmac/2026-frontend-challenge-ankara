@@ -185,11 +185,13 @@ export function PersonDetail({ data, personKey, onClose, onPersonClick }) {
         <div className="detail-name">{displayName}</div>
         <button className="close-btn" onClick={onClose}>✕ CLOSE</button>
       </div>
-      <div className="detail-count">{records.length} records linked</div>
-      {records.length === 0 && <div className="empty-state">No records found for this person.</div>}
-      {records.map((r) => (
-        <RecordCard key={`${r.type}-${r.id}-${r._role}`} record={r} onPersonClick={onPersonClick} />
-      ))}
+      <div className="person-detail-body">
+        <div className="detail-count">{records.length} records linked</div>
+        {records.length === 0 && <div className="empty-state">No records found for this person.</div>}
+        {records.map((r) => (
+          <RecordCard key={`${r.type}-${r.id}-${r._role}`} record={r} onPersonClick={onPersonClick} />
+        ))}
+      </div>
     </div>
   );
 }
