@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
-import { getPersonKey } from '../api/jotform';
+import { getPersonKey, normalizeName } from '../api/jotform';
+
+const BLACKLIST = new Set(['unknown', 'event staff', 'bilinmiyor', 'staff', 'anonymous', 'n/a']);
 
 const TYPE_CONFIG = {
   checkin: { label: 'CHECK-IN', color: '#0a1551' },
@@ -48,7 +50,9 @@ function SeenWithLinks({ seenWith, onPersonClick }) {
     <>
       {names.map((n, i) => (
         <React.Fragment key={n}>
-          <NameLink name={n} onPersonClick={onPersonClick} />
+          {BLACKLIST.has(normalizeName(n))
+            ? <span>{n}</span>
+            : <NameLink name={n} onPersonClick={onPersonClick} />}
           {i < names.length - 1 ? ', ' : ''}
         </React.Fragment>
       ))}
@@ -109,7 +113,7 @@ function RecordCard({ record, onPersonClick }) {
   const config = TYPE_CONFIG[record.type] || { label: record.type.toUpperCase(), color: '#6b7280' };
 
   return (
-    <div className="record-card" style={{ borderLeft: `3px solid ${config.color}` }}>
+    <div className="record-card">
       <div className="record-header">
         <span className="event-badge" style={{ backgroundColor: config.color }}>
           {config.label}
