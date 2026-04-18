@@ -1,31 +1,22 @@
-# Jotform Frontend Challenge Project
+# Missing Podo: The Ankara Case
 
-## User Information
-Please fill in your information after forking this repository:
+**Name:** Bedirhan Omac
 
-- **Name**: [Your Name]
+## Description
+Investigation dashboard for the Jotform Frontend Challenge. Aggregates data from 5 Jotform form sources to track Podo's last known movements across Ankara.
 
-## Project Description
-[Add a brief description of your project here]
+## Data Sources
+- Check-ins, Messages, Sightings, Personal Notes, Anonymous Tips
 
-## Getting Started
-[Add instructions for setting up and running the project]
+## Features
+- Unified timeline of 45 events sorted by timestamp
+- Person profiles linking records across all 5 data sources
+- Compare up to 3 suspects side by side
+- Suspect ranking by anonymous tip confidence score
+- Search with Turkish diacritic normalization (asli finds Aslı)
+- Clickable names navigate directly to person detail
+- Responsive design
 
-# 🚀 Challenge Duyurusu
-
-## 📅 Tarih ve Saat
-Cumartesi günü başlama saatinden itibaren üç saattir.
-
-## 🎯 Challenge Konsepti
-Bu challenge'da, size özel hazırlanmış bir senaryo üzerine web uygulaması geliştirmeniz istenecektir. Challenge başlangıcında senaryo detayları paylaşılacaktır.Katılımcılar, verilen GitHub reposunu fork ederek kendi geliştirme ortamlarını oluşturacaklardır.
-
-## 📦 GitHub Reposu
-Challenge için kullanılacak repo: https://github.com/cemjotform/2026-frontend-challenge-ankara
-
-## 🛠️ Hazırlık Süreci
-1. GitHub reposunu fork edin
-2. Tercih ettiğiniz framework ile geliştirme ortamınızı hazırlayın
-3. Hazırladığınız setup'ı fork ettiğiniz repoya gönderin
-
-## 💡 Önemli Notlar
-- Katılımcılar kendi tercih ettikleri framework'leri kullanabilirler
+## Run
+npm install && npm run dev
+Open http://localhost:5173
