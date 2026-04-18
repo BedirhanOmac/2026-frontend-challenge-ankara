@@ -127,21 +127,6 @@ searchQuery: string
 
 ---
 
-## Design system
-
-Jotform design language: white base (`#ffffff`), section backgrounds (`#f3f3fe`), deep navy headings (`#0a1551`), muted blue-grey text (`#545e94`), orange accent (`#ff6100`). Font: Plus Jakarta Sans (Google Fonts).
-
-Event type color coding (consistent across all views):
-| Type | Color |
-|---|---|
-| Check-in | `#0a1551` navy |
-| Message | `#7c3aed` purple |
-| Sighting | `#ff6100` orange |
-| Note | `#059669` green |
-| Tip | `#e02020` red |
-
----
-
 ## Run
 
 ```bash
