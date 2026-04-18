@@ -90,7 +90,11 @@ export default function App() {
 
       <main className="app-main">
         {activeTab === 'timeline' && (
-          <Timeline data={data} searchQuery={searchQuery} />
+          <Timeline
+            data={data}
+            searchQuery={searchQuery}
+            onPersonClick={(key) => { setSelectedPerson(key); setActiveTab('persons'); }}
+          />
         )}
 
         {activeTab === 'persons' && (

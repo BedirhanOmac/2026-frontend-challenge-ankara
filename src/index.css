@@ -236,6 +236,18 @@ body {
   margin-bottom: 4px;
 }
 
+.name-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.name-link:hover { color: var(--accent); text-decoration: underline; }
+
 .event-content {
   font-size: 13px;
   color: var(--text-muted);

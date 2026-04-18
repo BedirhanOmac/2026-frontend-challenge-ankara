@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { normalizeName } from '../api/jotform';
+import { normalizeName, getPersonKey } from '../api/jotform';
 
 const TYPE_CONFIG = {
   checkin: { label: 'CHECK-IN', color: '#0a1551' },
@@ -52,7 +52,27 @@ function getEventContent(event) {
   }
 }
 
-function TimelineEvent({ event }) {
+function NameLink({ name, onPersonClick }) {
+  if (!name) return null;
+  return (
+    <button className="name-link" onClick={(e) => { e.stopPropagation(); onPersonClick(getPersonKey(name)); }}>
+      {name}
+    </button>
+  );
+}
+
+function renderEventPeople(event, onPersonClick) {
+  switch (event.type) {
+    case 'checkin': return <NameLink name={event.personName} onPersonClick={onPersonClick} />;
+    case 'message': return <><NameLink name={event.senderName} onPersonClick={onPersonClick} /> → <NameLink name={event.recipientName} onPersonClick={onPersonClick} /></>;
+    case 'sighting': return <><NameLink name={event.personName} onPersonClick={onPersonClick} />{event.seenWith ? <> w/ <NameLink name={event.seenWith} onPersonClick={onPersonClick} /></> : null}</>;
+    case 'note': return <NameLink name={event.authorName} onPersonClick={onPersonClick} />;
+    case 'tip': return <NameLink name={event.suspectName} onPersonClick={onPersonClick} />;
+    default: return null;
+  }
+}
+
+function TimelineEvent({ event, onPersonClick }) {
   const config = TYPE_CONFIG[event.type] || { label: event.type.toUpperCase(), color: '#6b7280' };
   const urgencyColor = event.urgency ? URGENCY_COLORS[event.urgency.toLowerCase()] : null;
 
@@ -70,7 +90,7 @@ function TimelineEvent({ event }) {
         <span className="event-time">{formatTime(event.timestamp)}</span>
         <span className="event-location">{event.location}</span>
       </div>
-      <div className="event-people">{getEventPeople(event)}</div>
+      <div className="event-people">{renderEventPeople(event, onPersonClick)}</div>
       {getEventContent(event) && (
         <div className="event-content">"{getEventContent(event)}"</div>
       )}
@@ -78,7 +98,7 @@ function TimelineEvent({ event }) {
   );
 }
 
-export function Timeline({ data, searchQuery }) {
+export function Timeline({ data, searchQuery, onPersonClick }) {
   const events = useMemo(() => {
     const all = [
       ...data.checkins,
@@ -113,7 +133,7 @@ export function Timeline({ data, searchQuery }) {
     <div className="timeline">
       <div className="timeline-count">{events.length} events</div>
       {events.map((event) => (
-        <TimelineEvent key={`${event.type}-${event.id}`} event={event} />
+        <TimelineEvent key={`${event.type}-${event.id}`} event={event} onPersonClick={onPersonClick} />
       ))}
     </div>
   );
