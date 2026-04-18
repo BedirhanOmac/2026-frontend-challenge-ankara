@@ -623,6 +623,59 @@ body {
 }
 .retry-btn:hover { background: #e05500; }
 
+/* ─── Map ────────────────────────────────────────────────────── */
+.map-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.map-container {
+  height: 70vh;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  flex-shrink: 0;
+}
+
+.legend-line {
+  width: 22px;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg, #ff6100 0px, #ff6100 8px, transparent 8px, transparent 13px
+  );
+  flex-shrink: 0;
+}
+
 /* ─── Misc ───────────────────────────────────────────────────── */
 .empty-state {
   padding: 32px;

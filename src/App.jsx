@@ -5,6 +5,7 @@ import { PersonList } from './components/PersonList';
 import { PersonDetail } from './components/PersonDetail';
 import { SearchBar } from './components/SearchBar';
 import { SuspectPanel } from './components/SuspectPanel';
+import { MapView } from './components/MapView';
 
 function LoadingScreen() {
   return (
@@ -114,6 +115,12 @@ export default function App() {
         >
           SUSPECTS
         </button>
+        <button
+          className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+          onClick={() => setActiveTab('map')}
+        >
+          MAP
+        </button>
       </div>
 
       <main className="app-main">
@@ -149,6 +156,10 @@ export default function App() {
 
         {activeTab === 'suspects' && (
           <SuspectPanel data={data} />
+        )}
+
+        {activeTab === 'map' && (
+          <MapView data={data} />
         )}
       </main>
     </div>
