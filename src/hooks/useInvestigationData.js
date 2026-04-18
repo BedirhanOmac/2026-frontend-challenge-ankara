@@ -22,13 +22,13 @@ export function useInvestigationData() {
           setData(result);
         }
       } catch (err) {
+        console.error('[useInvestigationData] fetch failed:', err);
         if (!cancelled) {
           setError(err);
         }
       } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        // Always stop loading — cancelled only guards data/error state updates
+        setLoading(false);
       }
     }
 

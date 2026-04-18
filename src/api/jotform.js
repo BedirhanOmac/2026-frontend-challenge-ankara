@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const API_KEY = 'ad39735f1449a6dc28d60e0921352665';
 const BASE = 'https://api.jotform.com';
 
@@ -70,8 +68,13 @@ function flattenAnswers(answers) {
 
 async function fetchSubmissions(formId) {
   const url = `${BASE}/form/${formId}/submissions?apiKey=${API_KEY}&limit=1000`;
-  const { data } = await axios.get(url);
-  return data.content || [];
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status} for form ${formId}`);
+  const json = await res.json();
+  if (json.responseCode !== 200) {
+    throw new Error(`API error ${json.responseCode}: ${json.message} (form ${formId})`);
+  }
+  return json.content || [];
 }
 
 async function fetchCheckins() {
