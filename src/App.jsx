@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useInvestigationData } from './hooks/useInvestigationData';
 import { Timeline } from './components/Timeline';
 import { PersonList } from './components/PersonList';
@@ -61,6 +61,9 @@ export default function App() {
   }
   const [activeTab, setActiveTab] = useState('timeline');
 
+  // Always clear search when the active tab changes
+  useEffect(() => { setSearchQuery(''); }, [activeTab]);
+
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} onRetry={retry} />;
 
@@ -95,19 +98,19 @@ export default function App() {
       <div className="tab-bar">
         <button
           className={`tab-btn ${activeTab === 'timeline' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('timeline'); setSearchQuery(''); }}
+          onClick={() => setActiveTab('timeline')}
         >
           TIMELINE
         </button>
         <button
           className={`tab-btn ${activeTab === 'persons' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('persons'); setSearchQuery(''); }}
+          onClick={() => setActiveTab('persons')}
         >
           PERSONS
         </button>
         <button
           className={`tab-btn ${activeTab === 'suspects' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('suspects'); setSearchQuery(''); }}
+          onClick={() => setActiveTab('suspects')}
         >
           SUSPECTS
         </button>
